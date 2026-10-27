@@ -37,6 +37,10 @@ dependencies:
   rust_lib_my_app:
     path: rust_builder
   flutter_rust_bridge: 2.13.0
+  async_button_handler: ^0.1.0+2
+  flutter_map: ^8.3.2
+  latlong2: ^0.10.1
+  geolocator: ^14.1.2
 
 dev_dependencies:
   flutter_test:

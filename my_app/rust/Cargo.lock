@@ -3707,6 +3707,9 @@ dependencies = [
  "anyhow",
  "flutter_rust_bridge",
  "log",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
  "veilid-taxi",
 ]
 

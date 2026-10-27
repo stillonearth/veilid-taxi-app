@@ -7,27 +7,136 @@ import '../frb_generated.dart';
 
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `from`
+
 Future<Vp2PApp> initializeApp() =>
     RustLib.instance.api.crateApiTaxiInitializeApp();
 
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner< P2PApp>>
-abstract class P2PApp implements RustOpaqueInterface {}
-
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<PublishedPedestrianRequest>>
-abstract class PublishedPedestrianRequest implements RustOpaqueInterface {}
-
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<VP2PApp>>
 abstract class Vp2PApp implements RustOpaqueInterface {
-  P2PApp get p2PApp;
-
-  set p2PApp(P2PApp p2PApp);
+  Future<void> connectToNetwork();
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<Vp2PApp> newInstance() =>
       RustLib.instance.api.crateApiTaxiVp2PAppNew();
 
-  Future<PublishedPedestrianRequest> requestRide({
+  Future<RideRequestInfo> requestRide({
     required double lat,
     required double lon,
   });
+
+  /// Sends the pedestrian's accept/decline decision back to the offering driver.
+  Future<void> respondToDriverRideRequest({
+    required DriverRideRequestInfo offer,
+    required bool accept,
+  });
+
+  /// Streams driver offers for our ride requests to Dart.
+  ///
+  /// Starts the veilid network loop (which decodes incoming app messages)
+  /// and returns immediately, so the app stays usable for other calls.
+  /// Only the first call has an effect.
+  Stream<DriverRideRequestInfo> subscribeToP2PEvents();
+}
+
+/// A driver's offer to take a published ride request.
+class DriverRideRequestInfo {
+  final PedestrianRideRequestInfo pedestrianRideRequest;
+  final String message;
+  final Uint8List driverRoute;
+
+  const DriverRideRequestInfo({
+    required this.pedestrianRideRequest,
+    required this.message,
+    required this.driverRoute,
+  });
+
+  @override
+  int get hashCode =>
+      pedestrianRideRequest.hashCode ^ message.hashCode ^ driverRoute.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DriverRideRequestInfo &&
+          runtimeType == other.runtimeType &&
+          pedestrianRideRequest == other.pedestrianRideRequest &&
+          message == other.message &&
+          driverRoute == other.driverRoute;
+}
+
+/// The pedestrian request a driver is answering, as plain data for the Dart side.
+class PedestrianRideRequestInfo {
+  final String requestKey;
+  final Uint8List routeBlob;
+  final BigInt cell;
+  final BigInt expiresAt;
+  final int maxPriceCents;
+
+  const PedestrianRideRequestInfo({
+    required this.requestKey,
+    required this.routeBlob,
+    required this.cell,
+    required this.expiresAt,
+    required this.maxPriceCents,
+  });
+
+  @override
+  int get hashCode =>
+      requestKey.hashCode ^
+      routeBlob.hashCode ^
+      cell.hashCode ^
+      expiresAt.hashCode ^
+      maxPriceCents.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PedestrianRideRequestInfo &&
+          runtimeType == other.runtimeType &&
+          requestKey == other.requestKey &&
+          routeBlob == other.routeBlob &&
+          cell == other.cell &&
+          expiresAt == other.expiresAt &&
+          maxPriceCents == other.maxPriceCents;
+}
+
+/// Details of a published ride request, as plain data for the Dart side.
+class RideRequestInfo {
+  final String requestKey;
+  final String routeId;
+  final String boardKey;
+  final int slot;
+  final double lat;
+  final double lon;
+
+  const RideRequestInfo({
+    required this.requestKey,
+    required this.routeId,
+    required this.boardKey,
+    required this.slot,
+    required this.lat,
+    required this.lon,
+  });
+
+  @override
+  int get hashCode =>
+      requestKey.hashCode ^
+      routeId.hashCode ^
+      boardKey.hashCode ^
+      slot.hashCode ^
+      lat.hashCode ^
+      lon.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is RideRequestInfo &&
+          runtimeType == other.runtimeType &&
+          requestKey == other.requestKey &&
+          routeId == other.routeId &&
+          boardKey == other.boardKey &&
+          slot == other.slot &&
+          lat == other.lat &&
+          lon == other.lon;
 }

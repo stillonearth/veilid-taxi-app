@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
+import 'api/logs.dart';
 import 'api/taxi.dart';
 
 import 'dart:async';
@@ -69,7 +70,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.13.0';
 
   @override
-  int get rustContentHash => 1323884439;
+  int get rustContentHash => 218017738;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -81,39 +82,31 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  P2PApp crateApiTaxiVp2PAppAutoAccessorGetP2PApp({required Vp2PApp that});
-
-  void crateApiTaxiVp2PAppAutoAccessorSetP2PApp({
-    required Vp2PApp that,
-    required P2PApp p2PApp,
-  });
+  Future<void> crateApiTaxiVp2PAppConnectToNetwork({required Vp2PApp that});
 
   Future<Vp2PApp> crateApiTaxiVp2PAppNew();
 
-  Future<PublishedPedestrianRequest> crateApiTaxiVp2PAppRequestRide({
+  Future<RideRequestInfo> crateApiTaxiVp2PAppRequestRide({
     required Vp2PApp that,
     required double lat,
     required double lon,
+  });
+
+  Future<void> crateApiTaxiVp2PAppRespondToDriverRideRequest({
+    required Vp2PApp that,
+    required DriverRideRequestInfo offer,
+    required bool accept,
+  });
+
+  Stream<DriverRideRequestInfo> crateApiTaxiVp2PAppSubscribeToP2PEvents({
+    required Vp2PApp that,
   });
 
   Future<void> crateApiTaxiInitApp();
 
   Future<Vp2PApp> crateApiTaxiInitializeApp();
 
-  RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_P2PApp;
-
-  RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_P2PApp;
-
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_P2PAppPtr;
-
-  RustArcIncrementStrongCountFnType
-  get rust_arc_increment_strong_count_PublishedPedestrianRequest;
-
-  RustArcDecrementStrongCountFnType
-  get rust_arc_decrement_strong_count_PublishedPedestrianRequest;
-
-  CrossPlatformFinalizerArg
-  get rust_arc_decrement_strong_count_PublishedPedestrianRequestPtr;
+  Stream<String> crateApiLogsVeilidLogStream();
 
   RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Vp2PApp;
 
@@ -131,69 +124,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  P2PApp crateApiTaxiVp2PAppAutoAccessorGetP2PApp({required Vp2PApp that}) {
-    return handler.executeSync(
-      SyncTask(
-        callFfi: () {
+  Future<void> crateApiTaxiVp2PAppConnectToNetwork({required Vp2PApp that}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVP2PApp(
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVP2PApp(
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 1,
+            port: port_,
+          );
         },
         codec: SseCodec(
-          decodeSuccessData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerP2PApp,
-          decodeErrorData: null,
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_AnyhowException,
         ),
-        constMeta: kCrateApiTaxiVp2PAppAutoAccessorGetP2PAppConstMeta,
+        constMeta: kCrateApiTaxiVp2PAppConnectToNetworkConstMeta,
         argValues: [that],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiTaxiVp2PAppAutoAccessorGetP2PAppConstMeta =>
+  TaskConstMeta get kCrateApiTaxiVp2PAppConnectToNetworkConstMeta =>
       const TaskConstMeta(
-        debugName: "Vp2PApp_auto_accessor_get_p2p_app",
+        debugName: "Vp2PApp_connect_to_network",
         argNames: ["that"],
-      );
-
-  @override
-  void crateApiTaxiVp2PAppAutoAccessorSetP2PApp({
-    required Vp2PApp that,
-    required P2PApp p2PApp,
-  }) {
-    return handler.executeSync(
-      SyncTask(
-        callFfi: () {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVP2PApp(
-            that,
-            serializer,
-          );
-          sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerP2PApp(
-            p2PApp,
-            serializer,
-          );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiTaxiVp2PAppAutoAccessorSetP2PAppConstMeta,
-        argValues: [that, p2PApp],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiTaxiVp2PAppAutoAccessorSetP2PAppConstMeta =>
-      const TaskConstMeta(
-        debugName: "Vp2PApp_auto_accessor_set_p2p_app",
-        argNames: ["that", "p2PApp"],
       );
 
   @override
@@ -205,7 +166,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 3,
+            funcId: 2,
             port: port_,
           );
         },
@@ -225,7 +186,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "Vp2PApp_new", argNames: []);
 
   @override
-  Future<PublishedPedestrianRequest> crateApiTaxiVp2PAppRequestRide({
+  Future<RideRequestInfo> crateApiTaxiVp2PAppRequestRide({
     required Vp2PApp that,
     required double lat,
     required double lon,
@@ -243,13 +204,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 4,
+            funcId: 3,
             port: port_,
           );
         },
         codec: SseCodec(
-          decodeSuccessData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPublishedPedestrianRequest,
+          decodeSuccessData: sse_decode_ride_request_info,
           decodeErrorData: sse_decode_AnyhowException,
         ),
         constMeta: kCrateApiTaxiVp2PAppRequestRideConstMeta,
@@ -266,6 +226,90 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<void> crateApiTaxiVp2PAppRespondToDriverRideRequest({
+    required Vp2PApp that,
+    required DriverRideRequestInfo offer,
+    required bool accept,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVP2PApp(
+            that,
+            serializer,
+          );
+          sse_encode_box_autoadd_driver_ride_request_info(offer, serializer);
+          sse_encode_bool(accept, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 4,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+        constMeta: kCrateApiTaxiVp2PAppRespondToDriverRideRequestConstMeta,
+        argValues: [that, offer, accept],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTaxiVp2PAppRespondToDriverRideRequestConstMeta =>
+      const TaskConstMeta(
+        debugName: "Vp2PApp_respond_to_driver_ride_request",
+        argNames: ["that", "offer", "accept"],
+      );
+
+  @override
+  Stream<DriverRideRequestInfo> crateApiTaxiVp2PAppSubscribeToP2PEvents({
+    required Vp2PApp that,
+  }) {
+    final sink = RustStreamSink<DriverRideRequestInfo>();
+    unawaited(
+      handler.executeNormal(
+        NormalTask(
+          callFfi: (port_) {
+            final serializer = SseSerializer(generalizedFrbRustBinding);
+            sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVP2PApp(
+              that,
+              serializer,
+            );
+            sse_encode_StreamSink_driver_ride_request_info_Sse(
+              sink,
+              serializer,
+            );
+            pdeCallFfi(
+              generalizedFrbRustBinding,
+              serializer,
+              funcId: 5,
+              port: port_,
+            );
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData: null,
+          ),
+          constMeta: kCrateApiTaxiVp2PAppSubscribeToP2PEventsConstMeta,
+          argValues: [that, sink],
+          apiImpl: this,
+        ),
+      ),
+    );
+    return sink.stream;
+  }
+
+  TaskConstMeta get kCrateApiTaxiVp2PAppSubscribeToP2PEventsConstMeta =>
+      const TaskConstMeta(
+        debugName: "Vp2PApp_subscribe_to_p2p_events",
+        argNames: ["that", "sink"],
+      );
+
+  @override
   Future<void> crateApiTaxiInitApp() {
     return handler.executeNormal(
       NormalTask(
@@ -274,7 +318,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 5,
+            funcId: 6,
             port: port_,
           );
         },
@@ -301,7 +345,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 6,
+            funcId: 7,
             port: port_,
           );
         },
@@ -320,21 +364,37 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiTaxiInitializeAppConstMeta =>
       const TaskConstMeta(debugName: "initialize_app", argNames: []);
 
-  RustArcIncrementStrongCountFnType
-  get rust_arc_increment_strong_count_P2PApp => wire
-      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerP2PApp;
+  @override
+  Stream<String> crateApiLogsVeilidLogStream() {
+    final sink = RustStreamSink<String>();
+    unawaited(
+      handler.executeNormal(
+        NormalTask(
+          callFfi: (port_) {
+            final serializer = SseSerializer(generalizedFrbRustBinding);
+            sse_encode_StreamSink_String_Sse(sink, serializer);
+            pdeCallFfi(
+              generalizedFrbRustBinding,
+              serializer,
+              funcId: 8,
+              port: port_,
+            );
+          },
+          codec: SseCodec(
+            decodeSuccessData: sse_decode_unit,
+            decodeErrorData: null,
+          ),
+          constMeta: kCrateApiLogsVeilidLogStreamConstMeta,
+          argValues: [sink],
+          apiImpl: this,
+        ),
+      ),
+    );
+    return sink.stream;
+  }
 
-  RustArcDecrementStrongCountFnType
-  get rust_arc_decrement_strong_count_P2PApp => wire
-      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerP2PApp;
-
-  RustArcIncrementStrongCountFnType
-  get rust_arc_increment_strong_count_PublishedPedestrianRequest => wire
-      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPublishedPedestrianRequest;
-
-  RustArcDecrementStrongCountFnType
-  get rust_arc_decrement_strong_count_PublishedPedestrianRequest => wire
-      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPublishedPedestrianRequest;
+  TaskConstMeta get kCrateApiLogsVeilidLogStreamConstMeta =>
+      const TaskConstMeta(debugName: "veilid_log_stream", argNames: ["sink"]);
 
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_Vp2PApp => wire
@@ -348,26 +408,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   AnyhowException dco_decode_AnyhowException(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return AnyhowException(raw as String);
-  }
-
-  @protected
-  P2PApp
-  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerP2PApp(
-    dynamic raw,
-  ) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return P2PAppImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  PublishedPedestrianRequest
-  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPublishedPedestrianRequest(
-    dynamic raw,
-  ) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return PublishedPedestrianRequestImpl.frbInternalDcoDecode(
-      raw as List<dynamic>,
-    );
   }
 
   @protected
@@ -398,26 +438,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  P2PApp
-  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerP2PApp(
-    dynamic raw,
-  ) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return P2PAppImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  PublishedPedestrianRequest
-  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPublishedPedestrianRequest(
-    dynamic raw,
-  ) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return PublishedPedestrianRequestImpl.frbInternalDcoDecode(
-      raw as List<dynamic>,
-    );
-  }
-
-  @protected
   Vp2PApp
   dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVP2PApp(
     dynamic raw,
@@ -427,9 +447,49 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RustStreamSink<String> dco_decode_StreamSink_String_Sse(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
+  }
+
+  @protected
+  RustStreamSink<DriverRideRequestInfo>
+  dco_decode_StreamSink_driver_ride_request_info_Sse(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
+  }
+
+  @protected
   String dco_decode_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as String;
+  }
+
+  @protected
+  bool dco_decode_bool(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as bool;
+  }
+
+  @protected
+  DriverRideRequestInfo dco_decode_box_autoadd_driver_ride_request_info(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_driver_ride_request_info(raw);
+  }
+
+  @protected
+  DriverRideRequestInfo dco_decode_driver_ride_request_info(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return DriverRideRequestInfo(
+      pedestrianRideRequest: dco_decode_pedestrian_ride_request_info(arr[0]),
+      message: dco_decode_String(arr[1]),
+      driverRoute: dco_decode_list_prim_u_8_strict(arr[2]),
+    );
   }
 
   @protected
@@ -442,6 +502,57 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
+  }
+
+  @protected
+  PedestrianRideRequestInfo dco_decode_pedestrian_ride_request_info(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return PedestrianRideRequestInfo(
+      requestKey: dco_decode_String(arr[0]),
+      routeBlob: dco_decode_list_prim_u_8_strict(arr[1]),
+      cell: dco_decode_u_64(arr[2]),
+      expiresAt: dco_decode_u_64(arr[3]),
+      maxPriceCents: dco_decode_u_32(arr[4]),
+    );
+  }
+
+  @protected
+  RideRequestInfo dco_decode_ride_request_info(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    return RideRequestInfo(
+      requestKey: dco_decode_String(arr[0]),
+      routeId: dco_decode_String(arr[1]),
+      boardKey: dco_decode_String(arr[2]),
+      slot: dco_decode_u_16(arr[3]),
+      lat: dco_decode_f_64(arr[4]),
+      lon: dco_decode_f_64(arr[5]),
+    );
+  }
+
+  @protected
+  int dco_decode_u_16(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  int dco_decode_u_32(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw as int;
+  }
+
+  @protected
+  BigInt dco_decode_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
   }
 
   @protected
@@ -467,30 +578,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_String(deserializer);
     return AnyhowException(inner);
-  }
-
-  @protected
-  P2PApp
-  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerP2PApp(
-    SseDeserializer deserializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return P2PAppImpl.frbInternalSseDecode(
-      sse_decode_usize(deserializer),
-      sse_decode_i_32(deserializer),
-    );
-  }
-
-  @protected
-  PublishedPedestrianRequest
-  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPublishedPedestrianRequest(
-    SseDeserializer deserializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return PublishedPedestrianRequestImpl.frbInternalSseDecode(
-      sse_decode_usize(deserializer),
-      sse_decode_i_32(deserializer),
-    );
   }
 
   @protected
@@ -530,30 +617,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  P2PApp
-  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerP2PApp(
-    SseDeserializer deserializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return P2PAppImpl.frbInternalSseDecode(
-      sse_decode_usize(deserializer),
-      sse_decode_i_32(deserializer),
-    );
-  }
-
-  @protected
-  PublishedPedestrianRequest
-  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPublishedPedestrianRequest(
-    SseDeserializer deserializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return PublishedPedestrianRequestImpl.frbInternalSseDecode(
-      sse_decode_usize(deserializer),
-      sse_decode_i_32(deserializer),
-    );
-  }
-
-  @protected
   Vp2PApp
   sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVP2PApp(
     SseDeserializer deserializer,
@@ -566,10 +629,58 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RustStreamSink<String> sse_decode_StreamSink_String_Sse(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
+  }
+
+  @protected
+  RustStreamSink<DriverRideRequestInfo>
+  sse_decode_StreamSink_driver_ride_request_info_Sse(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
+  }
+
+  @protected
   String sse_decode_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_list_prim_u_8_strict(deserializer);
     return utf8.decoder.convert(inner);
+  }
+
+  @protected
+  bool sse_decode_bool(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint8() != 0;
+  }
+
+  @protected
+  DriverRideRequestInfo sse_decode_box_autoadd_driver_ride_request_info(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_driver_ride_request_info(deserializer));
+  }
+
+  @protected
+  DriverRideRequestInfo sse_decode_driver_ride_request_info(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_pedestrianRideRequest = sse_decode_pedestrian_ride_request_info(
+      deserializer,
+    );
+    var var_message = sse_decode_String(deserializer);
+    var var_driverRoute = sse_decode_list_prim_u_8_strict(deserializer);
+    return DriverRideRequestInfo(
+      pedestrianRideRequest: var_pedestrianRideRequest,
+      message: var_message,
+      driverRoute: var_driverRoute,
+    );
   }
 
   @protected
@@ -583,6 +694,62 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
     return deserializer.buffer.getUint8List(len_);
+  }
+
+  @protected
+  PedestrianRideRequestInfo sse_decode_pedestrian_ride_request_info(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_requestKey = sse_decode_String(deserializer);
+    var var_routeBlob = sse_decode_list_prim_u_8_strict(deserializer);
+    var var_cell = sse_decode_u_64(deserializer);
+    var var_expiresAt = sse_decode_u_64(deserializer);
+    var var_maxPriceCents = sse_decode_u_32(deserializer);
+    return PedestrianRideRequestInfo(
+      requestKey: var_requestKey,
+      routeBlob: var_routeBlob,
+      cell: var_cell,
+      expiresAt: var_expiresAt,
+      maxPriceCents: var_maxPriceCents,
+    );
+  }
+
+  @protected
+  RideRequestInfo sse_decode_ride_request_info(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_requestKey = sse_decode_String(deserializer);
+    var var_routeId = sse_decode_String(deserializer);
+    var var_boardKey = sse_decode_String(deserializer);
+    var var_slot = sse_decode_u_16(deserializer);
+    var var_lat = sse_decode_f_64(deserializer);
+    var var_lon = sse_decode_f_64(deserializer);
+    return RideRequestInfo(
+      requestKey: var_requestKey,
+      routeId: var_routeId,
+      boardKey: var_boardKey,
+      slot: var_slot,
+      lat: var_lat,
+      lon: var_lon,
+    );
+  }
+
+  @protected
+  int sse_decode_u_16(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint16();
+  }
+
+  @protected
+  int sse_decode_u_32(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getUint32();
+  }
+
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
   }
 
   @protected
@@ -609,44 +776,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getUint8() != 0;
-  }
-
-  @protected
   void sse_encode_AnyhowException(
     AnyhowException self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.message, serializer);
-  }
-
-  @protected
-  void
-  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerP2PApp(
-    P2PApp self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-      (self as P2PAppImpl).frbInternalSseEncode(move: true),
-      serializer,
-    );
-  }
-
-  @protected
-  void
-  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPublishedPedestrianRequest(
-    PublishedPedestrianRequest self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-      (self as PublishedPedestrianRequestImpl).frbInternalSseEncode(move: true),
-      serializer,
-    );
   }
 
   @protected
@@ -690,32 +825,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerP2PApp(
-    P2PApp self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-      (self as P2PAppImpl).frbInternalSseEncode(move: null),
-      serializer,
-    );
-  }
-
-  @protected
-  void
-  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerPublishedPedestrianRequest(
-    PublishedPedestrianRequest self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-      (self as PublishedPedestrianRequestImpl).frbInternalSseEncode(move: null),
-      serializer,
-    );
-  }
-
-  @protected
-  void
   sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerVP2PApp(
     Vp2PApp self,
     SseSerializer serializer,
@@ -728,9 +837,72 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_StreamSink_String_Sse(
+    RustStreamSink<String> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
+      serializer,
+    );
+  }
+
+  @protected
+  void sse_encode_StreamSink_driver_ride_request_info_Sse(
+    RustStreamSink<DriverRideRequestInfo> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_driver_ride_request_info,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
+      serializer,
+    );
+  }
+
+  @protected
   void sse_encode_String(String self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_list_prim_u_8_strict(utf8.encoder.convert(self), serializer);
+  }
+
+  @protected
+  void sse_encode_bool(bool self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint8(self ? 1 : 0);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_driver_ride_request_info(
+    DriverRideRequestInfo self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_driver_ride_request_info(self, serializer);
+  }
+
+  @protected
+  void sse_encode_driver_ride_request_info(
+    DriverRideRequestInfo self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_pedestrian_ride_request_info(
+      self.pedestrianRideRequest,
+      serializer,
+    );
+    sse_encode_String(self.message, serializer);
+    sse_encode_list_prim_u_8_strict(self.driverRoute, serializer);
   }
 
   @protected
@@ -747,6 +919,51 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.length, serializer);
     serializer.buffer.putUint8List(self);
+  }
+
+  @protected
+  void sse_encode_pedestrian_ride_request_info(
+    PedestrianRideRequestInfo self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.requestKey, serializer);
+    sse_encode_list_prim_u_8_strict(self.routeBlob, serializer);
+    sse_encode_u_64(self.cell, serializer);
+    sse_encode_u_64(self.expiresAt, serializer);
+    sse_encode_u_32(self.maxPriceCents, serializer);
+  }
+
+  @protected
+  void sse_encode_ride_request_info(
+    RideRequestInfo self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.requestKey, serializer);
+    sse_encode_String(self.routeId, serializer);
+    sse_encode_String(self.boardKey, serializer);
+    sse_encode_u_16(self.slot, serializer);
+    sse_encode_f_64(self.lat, serializer);
+    sse_encode_f_64(self.lon, serializer);
+  }
+
+  @protected
+  void sse_encode_u_16(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint16(self);
+  }
+
+  @protected
+  void sse_encode_u_32(int self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putUint32(self);
+  }
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
   }
 
   @protected
@@ -771,61 +988,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putInt32(self);
   }
-
-  @protected
-  void sse_encode_bool(bool self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putUint8(self ? 1 : 0);
-  }
-}
-
-@sealed
-class P2PAppImpl extends RustOpaque implements P2PApp {
-  // Not to be used by end users
-  P2PAppImpl.frbInternalDcoDecode(List<dynamic> wire)
-    : super.frbInternalDcoDecode(wire, _kStaticData);
-
-  // Not to be used by end users
-  P2PAppImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
-    : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_P2PApp,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_P2PApp,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_P2PAppPtr,
-  );
-}
-
-@sealed
-class PublishedPedestrianRequestImpl extends RustOpaque
-    implements PublishedPedestrianRequest {
-  // Not to be used by end users
-  PublishedPedestrianRequestImpl.frbInternalDcoDecode(List<dynamic> wire)
-    : super.frbInternalDcoDecode(wire, _kStaticData);
-
-  // Not to be used by end users
-  PublishedPedestrianRequestImpl.frbInternalSseDecode(
-    BigInt ptr,
-    int externalSizeOnNative,
-  ) : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount: RustLib
-        .instance
-        .api
-        .rust_arc_increment_strong_count_PublishedPedestrianRequest,
-    rustArcDecrementStrongCount: RustLib
-        .instance
-        .api
-        .rust_arc_decrement_strong_count_PublishedPedestrianRequest,
-    rustArcDecrementStrongCountPtr: RustLib
-        .instance
-        .api
-        .rust_arc_decrement_strong_count_PublishedPedestrianRequestPtr,
-  );
 }
 
 @sealed
@@ -847,13 +1009,10 @@ class Vp2PAppImpl extends RustOpaque implements Vp2PApp {
         RustLib.instance.api.rust_arc_decrement_strong_count_Vp2PAppPtr,
   );
 
-  P2PApp get p2PApp =>
-      RustLib.instance.api.crateApiTaxiVp2PAppAutoAccessorGetP2PApp(that: this);
+  Future<void> connectToNetwork() =>
+      RustLib.instance.api.crateApiTaxiVp2PAppConnectToNetwork(that: this);
 
-  set p2PApp(P2PApp p2PApp) => RustLib.instance.api
-      .crateApiTaxiVp2PAppAutoAccessorSetP2PApp(that: this, p2PApp: p2PApp);
-
-  Future<PublishedPedestrianRequest> requestRide({
+  Future<RideRequestInfo> requestRide({
     required double lat,
     required double lon,
   }) => RustLib.instance.api.crateApiTaxiVp2PAppRequestRide(
@@ -861,4 +1020,22 @@ class Vp2PAppImpl extends RustOpaque implements Vp2PApp {
     lat: lat,
     lon: lon,
   );
+
+  /// Sends the pedestrian's accept/decline decision back to the offering driver.
+  Future<void> respondToDriverRideRequest({
+    required DriverRideRequestInfo offer,
+    required bool accept,
+  }) => RustLib.instance.api.crateApiTaxiVp2PAppRespondToDriverRideRequest(
+    that: this,
+    offer: offer,
+    accept: accept,
+  );
+
+  /// Streams driver offers for our ride requests to Dart.
+  ///
+  /// Starts the veilid network loop (which decodes incoming app messages)
+  /// and returns immediately, so the app stays usable for other calls.
+  /// Only the first call has an effect.
+  Stream<DriverRideRequestInfo> subscribeToP2PEvents() =>
+      RustLib.instance.api.crateApiTaxiVp2PAppSubscribeToP2PEvents(that: this);
 }

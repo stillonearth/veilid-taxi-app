@@ -11,6 +11,9 @@ anyhow = "1.0"
 flutter_rust_bridge = "=2.13.0"
 veilid-taxi = { path = "../../../veilid-taxi" }
 log = "0.4"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+tokio = "1.54"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
