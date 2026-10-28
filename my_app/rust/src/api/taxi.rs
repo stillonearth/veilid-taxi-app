@@ -99,10 +99,17 @@ impl VP2PApp {
         let on_driver_ride_request = self.p2p_app.app_state.on_driver_ride_request.clone();
         flutter_rust_bridge::spawn(async move {
             while let Ok(ride_request) = on_driver_ride_request.recv_async().await {
+                println!("here 1");
                 info!("driver offer received: {}", ride_request.message);
-                if sink.add(ride_request.into()).is_err() {
+
+                let res = sink.add(ride_request.into());
+
+                if res.is_err() {
+                    println!("err: {:?}", res.err().unwrap());
                     break;
                 }
+
+                println!("here 2");
             }
         });
     }

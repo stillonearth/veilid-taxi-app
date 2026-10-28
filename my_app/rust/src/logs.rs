@@ -36,6 +36,8 @@ pub fn subscribe(sink: StreamSink<String>) {
     let mut logs = LOGS.lock().unwrap();
     for line in &logs.backlog {
         if sink.add(line.clone()).is_err() {
+            // Dropping a sink logs through tracing, which re-enters push_line.
+            drop(logs);
             return;
         }
     }
@@ -49,11 +51,15 @@ fn push_line(line: String) {
     }
     logs.backlog.push_back(line.clone());
     // Drop the sink once Dart has stopped listening.
-    if let Some(sink) = &logs.sink {
-        if sink.add(line).is_err() {
-            logs.sink = None;
-        }
-    }
+    let closed = match &logs.sink {
+        Some(sink) => sink.add(line).is_err(),
+        None => false,
+    };
+    let dead_sink = if closed { logs.sink.take() } else { None };
+    // A dropped sink logs a warning that comes back into push_line, so it
+    // must be dropped after the lock is released or this thread deadlocks.
+    drop(logs);
+    drop(dead_sink);
 }
 
 struct ForwardLayer;

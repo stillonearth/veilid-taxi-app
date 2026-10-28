@@ -140,7 +140,6 @@ class _MapScreenState extends State<MapScreen> {
     super.initState();
     _detectPosition();
     _offerSub = widget.p2pApp.subscribeToP2PEvents().listen((offer) {
-      print(offer);
       _offerDialogs = _offerDialogs.then((_) => _showOfferDialog(offer));
     });
   }
