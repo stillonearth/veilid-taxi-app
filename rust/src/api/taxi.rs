@@ -2,7 +2,7 @@ use std::path::PathBuf;
 
 use anyhow::Result;
 use tracing::{error, info};
-use veilid_taxi::{
+use ztaxi::{
     app::P2PApp,
     driver::DriverRideRequest,
     pedestrian::{
@@ -99,17 +99,10 @@ impl VP2PApp {
         let on_driver_ride_request = self.p2p_app.app_state.on_driver_ride_request.clone();
         flutter_rust_bridge::spawn(async move {
             while let Ok(ride_request) = on_driver_ride_request.recv_async().await {
-                println!("here 1");
                 info!("driver offer received: {}", ride_request.message);
-
-                let res = sink.add(ride_request.into());
-
-                if res.is_err() {
-                    println!("err: {:?}", res.err().unwrap());
+                if sink.add(ride_request.into()).is_err() {
                     break;
                 }
-
-                println!("here 2");
             }
         });
     }

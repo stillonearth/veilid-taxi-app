@@ -551,7 +551,7 @@ class _LogPanelState extends State<LogPanel> {
             widget.lines[i],
             style: TextStyle(
               fontFamily: 'monospace',
-              fontSize: 12,
+              fontSize: 17,
               color: _colorFor(widget.lines[i]),
             ),
           ),
